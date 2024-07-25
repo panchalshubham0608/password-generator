@@ -49,6 +49,10 @@ p {
   margin-bottom: 30px;
 }
 
+.Password {
+  word-break: break-all;
+}
+
 .Password-container, .Customize-container {
   box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }

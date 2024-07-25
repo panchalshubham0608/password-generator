@@ -49,7 +49,7 @@ function App() {
 			</header>
 			<main>
 				<div className="Password-container">
-					<p>{password}</p>
+					<p className="Password">{password}</p>
 					<div>
 						<button onClick={handleCopyPassword}><i className={copyIconClassName} /></button>
 						<button onClick={generateAndShowPassword}><i className="fa fa-arrows-rotate" /></button>
