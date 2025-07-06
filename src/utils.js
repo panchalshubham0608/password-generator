@@ -1,27 +1,58 @@
 // A utility function to generate a random password
 const generatePassword = ({ upperCase, lowerCase, numbers, symbols, length }) => {
-    const upperCaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const lowerCaseChars = 'abcdefghijklmnopqrstuvwxyz';
-    const numberChars = '0123456789';
-    const symbolChars = '!@#$%^&*()_+[]{}|;:,.<>?';
+    const charSets = {
+        upperCase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        lowerCase: 'abcdefghijklmnopqrstuvwxyz',
+        numbers: '0123456789',
+        symbols: '!@#$%^&*()_+[]{}|;:,.<>?',
+    };
 
-    let characters = '';
-    if (upperCase) characters += upperCaseChars;
-    if (lowerCase) characters += lowerCaseChars;
-    if (numbers) characters += numberChars;
-    if (symbols) characters += symbolChars;
+    let allowed = '';
+    const requiredChars = [];
 
-    if (characters.length === 0) {
+    if (upperCase) {
+        allowed += charSets.upperCase;
+        requiredChars.push(randomCharSecure(charSets.upperCase));
+    }
+    if (lowerCase) {
+        allowed += charSets.lowerCase;
+        requiredChars.push(randomCharSecure(charSets.lowerCase));
+    }
+    if (numbers) {
+        allowed += charSets.numbers;
+        requiredChars.push(randomCharSecure(charSets.numbers));
+    }
+    if (symbols) {
+        allowed += charSets.symbols;
+        requiredChars.push(randomCharSecure(charSets.symbols));
+    }
+
+    if (allowed.length === 0) {
         throw new Error('At least one character type must be selected.');
     }
 
-    let password = '';
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        password += characters[randomIndex];
+    const remainingLength = length - requiredChars.length;
+    const password = [...requiredChars];
+
+    for (let i = 0; i < remainingLength; i++) {
+        password.push(randomCharSecure(allowed));
     }
 
-    return password;
+    return shuffle(password).join('');
+}
+
+function randomCharSecure(charset) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return charset[array[0] % charset.length];
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1) * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
 // utility function to copy password to clipboard
